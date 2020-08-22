@@ -16,5 +16,16 @@ use antcooper\gpxwatermark\Watermark;
 
 Route::get('/', function () {
     $oWatermark = new Watermark();
-    return $oWatermark->helloWorld();
+
+    $result = $oWatermark->insert(public_path('samples/source/original_coledale.gpx'));
+
+    return view('index', ['result' => $result]);
+});
+
+Route::get('/extract', function () {
+    $oWatermark = new Watermark();
+
+    $result = $oWatermark->extract(public_path('samples/source/original_coledale.gpx'), public_path('samples/output/gpsbabel_coledale.gpx'));
+
+    return view('index', ['result' => $result]);
 });
