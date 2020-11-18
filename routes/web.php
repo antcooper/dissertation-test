@@ -14,18 +14,26 @@ use Illuminate\Support\Facades\Route;
 */
 use antcooper\gpxwatermark\Watermark;
 
-Route::get('/', function () {
-    $oWatermark = new Watermark();
+Route::get('/', 'TestController@index');
 
-    $result = $oWatermark->insert(public_path('samples/source/original_coledale.gpx'));
+Route::get('/embed', 'TestController@embed');
 
-    return view('index', ['result' => $result]);
-});
+
 
 Route::get('/extract', function () {
     $oWatermark = new Watermark();
 
-    $result = $oWatermark->extract(public_path('samples/source/original_coledale.gpx'), public_path('samples/output/gpsbabel_coledale.gpx'));
+    $result = $oWatermark->extract(public_path('samples/source/original_coledale.gpx'), public_path('samples/output/route.gpx'));
 
     return view('index', ['result' => $result]);
 });
+
+Route::get('/blindextract', function () {
+    $oWatermark = new Watermark();
+
+    $result = $oWatermark->blindExtract(public_path('samples/output/route.gpx'));
+
+    return view('index', ['result' => $result]);
+});
+
+// php comment
