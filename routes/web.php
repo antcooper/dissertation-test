@@ -18,22 +18,6 @@ Route::get('/', 'TestController@index');
 
 Route::get('/embed', 'TestController@embed');
 
+Route::get('/blindExtract', 'TestController@blindExtract');
 
-
-Route::get('/extract', function () {
-    $oWatermark = new Watermark();
-
-    $result = $oWatermark->extract(public_path('samples/source/original_coledale.gpx'), public_path('samples/output/route.gpx'));
-
-    return view('index', ['result' => $result]);
-});
-
-Route::get('/blindextract', function () {
-    $oWatermark = new Watermark();
-
-    $result = $oWatermark->blindExtract(public_path('samples/output/route.gpx'));
-
-    return view('index', ['result' => $result]);
-});
-
-// php comment
+Route::get('/nonBlindExtract', 'TestController@nonBlindExtract');
