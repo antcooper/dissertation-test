@@ -22,16 +22,22 @@ class TestController extends Controller
         return view('index', ['source' => $source, 'output' => $watermarked]);
     }
 
+    public function map()
+    {
+        return view('map');
+    }
+
     public function embed(Request $request)
     {
+        $start = microtime(TRUE);
 
         $oWatermark = new Embed(
             public_path('samples/source/'.$request->input('file')),
             public_path('samples/output/').$request->input('method').'/'.date('Y-m-d'),
-            'ABCD',
+            'a.cooper2@lancaster.ac.uk',
             [
                 'name' => 'Coledale Horseshoe',
-                'desc' => 'Prepared on '.date('Y-m-d \a\t H:i').' for email@hotmail.com. Route copyright Cicerone Press Limited. Not for public distribution.',
+                'desc' => 'Prepared on '.date('Y-m-d \a\t H:i').' for a.cooper2@lancaster.ac.uk. Route copyright Cicerone Press Limited. Not for public distribution.',
                 'src' => 'https://www.cicerone.co.uk/walking-the-lake-district-fells-buttermere-second'
             ],
             'Cicerone Press https://www.cicerone.co.uk'
@@ -39,7 +45,9 @@ class TestController extends Controller
 
         $result = $oWatermark->write($request->input('method'));
 
-        return redirect('/')->with('status', 'Payload inserted in '.$request->input('file'));
+        $end = microtime(TRUE);
+
+        return redirect('/')->with('status', 'Payload inserted in '.$request->input('file').' in '.number_format($end - $start, 6, '.', '').' seconds');
     }
 
     public function blindExtract(Request $request)
@@ -54,7 +62,7 @@ class TestController extends Controller
         $oExtract = new Extract();
 
         $source = public_path($request->input('file'));
-        $original = public_path('samples/source/'.basename($source));
+        $original = public_path('samples/source/original_hike.gpx');
 
         $result = $oExtract->nonBlind($original, $source);
         dd($result);

@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Route;
 use antcooper\gpxwatermark\Watermark;
 
 Route::get('/', 'TestController@index');
+Route::get('/map', 'TestController@map');
 
 Route::get('/embed', 'TestController@embed');
 

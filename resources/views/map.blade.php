@@ -8,22 +8,7 @@
 @section('content')
     <div class="mb-8">
         <h2 class="text-2xl mb-6">Payload</h2>
-
-        
     </div>
-
-    <table>
-        @foreach ($files as $file)
-        <tr class="border-b">
-            <td class="p-4">{{ basename($file) }}</td>
-            <td class="p-4">
-                <a class="text-blue-500" href="/embed?file={{ basename($file) }}">Embed</a>
-            </td>
-        </tr>
-        @endforeach
-    </table>
-@endsection
-
 
 <div class="bg-gray-500 h-full w-full" id="map"></div>
 
@@ -56,7 +41,7 @@
         var control = L.control.layers(baseMaps, null, {collapsed: false}).addTo(map);
         L.control.scale().addTo(map);
 
-        new L.GPX('{{ url('/samples/source/original_coledale.gpx') }}', {
+        new L.GPX('{{ url('/samples/source/original_hike.gpx') }}', {
             async: true,
             marker_options: {
                 startIconUrl: '{{ url('/vendor/leaflet-gpx/pin-icon-start.png') }}',
@@ -64,16 +49,15 @@
                 shadowUrl:    '{{ url('/vendor/leaflet-gpx/pin-shadow.png') }}',
             },
             polyline_options: {
-                color: 'green',
+                color: 'black',
                 weight: 2,
             }
         }).on('loaded', function(e) {
             var gpx = e.target;
-            control.addOverlay(gpx, 'Original');
+            control.addOverlay(gpx, 'Original (Black)');
         }).addTo(map);
 
-
-        new L.GPX('{{ url('/samples/output/short-route.gpx') }}', {
+        new L.GPX('{{ url('/samples/output/blind/2020-11-25/original_hike.gpx') }}', {
             async: true,
             marker_options: {
                 startIconUrl: '{{ url('/vendor/leaflet-gpx/pin-icon-start.png') }}',
@@ -86,7 +70,25 @@
             }
         }).on('loaded', function(e) {
             var gpx = e.target;
-            control.addOverlay(gpx, 'Watermarked');
+            control.addOverlay(gpx, 'Blind (Blue)');
+            map.fitBounds(gpx.getBounds());
+        }).addTo(map);
+
+
+        new L.GPX('{{ url('/samples/output/nonBlind/2020-11-25/original_hike.gpx') }}', {
+            async: true,
+            marker_options: {
+                startIconUrl: '{{ url('/vendor/leaflet-gpx/pin-icon-start.png') }}',
+                endIconUrl:   '{{ url('/vendor/leaflet-gpx/pin-icon-end.png') }}',
+                shadowUrl:    '{{ url('/vendor/leaflet-gpx/pin-shadow.png') }}',
+            },
+            polyline_options: {
+                color: 'green',
+                weight: 2,
+            }
+        }).on('loaded', function(e) {
+            var gpx = e.target;
+            control.addOverlay(gpx, 'Non-Blind (Green)');
             map.fitBounds(gpx.getBounds());
         }).addTo(map);
 
@@ -94,3 +96,4 @@
 
       display_gpx('map');
 </script>      
+@endsection
