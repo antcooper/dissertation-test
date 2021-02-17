@@ -3,17 +3,36 @@
 
 @extends('layouts.app')
 
-@section('title', 'Watermark')
+@section('title', 'Compare routes')
 
 @section('content')
-    <div class="mb-8">
-        <h2 class="text-2xl mb-6">Payload</h2>
+<div class="flex my-6">
+    <div class="border overflow-scroll px-6 w-1/2" style="height:400px;">
+        <h3 class="text-xl mb-2">Source</h3>
+        <pre class="text-blue-800">{{ file_get_contents(public_path($source)) }}</pre>
     </div>
+    <div class="border overflow-y-scroll px-6 w-1/2" style="height:400px;" src="">
+        <h3 class="text-xl mb-2">Output</h3>
+        <pre class="text-blue-800">{{ file_get_contents(public_path($output)) }}</pre>
+    </div>
+</div>
+
+<div class="flex my-6">
+    <div class="border overflow-scroll px-6 w-1/2" style="height:400px;">
+        <h3 class="text-xl mb-2">Blind</h3>
+        <pre>{{ print_r($blind) }}</pre>
+    </div>
+    <div class="border overflow-y-scroll px-6 w-1/2" style="height:400px;" src="">
+        <h3 class="text-xl mb-2">Non Blind</h3>
+        <pre>{{ print_r($nonBlind) }}</pre>
+    </div>
+</div>
+
 
 <div class="bg-gray-500 h-full w-full" id="map"></div>
 
 <script>
-    var mapboxKey = "pk.eyJ1IjoiYW50Y29vcGVyIiwiYSI6ImNrZDI4M2MzODFhenYyc3B2bWg1czdjejEifQ.3AA2uanY2OasIC5oQcPOvw";
+    var mapboxKey = "pk.eyJ1IjoiYW50Y29vcGVyIiwiYSI6ImNqNDdmMzdpNDA0bWozM21saWgzb3U4ODcifQ.8xMHBxB3T04FZkgNuOZd6g";
 
     function display_gpx(mapid) 
     {
@@ -41,23 +60,7 @@
         var control = L.control.layers(baseMaps, null, {collapsed: false}).addTo(map);
         L.control.scale().addTo(map);
 
-        new L.GPX('{{ url('/samples/source/original_hike.gpx') }}', {
-            async: true,
-            marker_options: {
-                startIconUrl: '{{ url('/vendor/leaflet-gpx/pin-icon-start.png') }}',
-                endIconUrl:   '{{ url('/vendor/leaflet-gpx/pin-icon-end.png') }}',
-                shadowUrl:    '{{ url('/vendor/leaflet-gpx/pin-shadow.png') }}',
-            },
-            polyline_options: {
-                color: 'black',
-                weight: 2,
-            }
-        }).on('loaded', function(e) {
-            var gpx = e.target;
-            control.addOverlay(gpx, 'Original (Black)');
-        }).addTo(map);
-
-        new L.GPX('{{ url('/samples/output/blind/2020-11-25/original_hike.gpx') }}', {
+        new L.GPX('{{ url($source) }}', {
             async: true,
             marker_options: {
                 startIconUrl: '{{ url('/vendor/leaflet-gpx/pin-icon-start.png') }}',
@@ -66,16 +69,14 @@
             },
             polyline_options: {
                 color: 'blue',
-                weight: 2,
+                weight: 4,
             }
         }).on('loaded', function(e) {
             var gpx = e.target;
-            control.addOverlay(gpx, 'Blind (Blue)');
-            map.fitBounds(gpx.getBounds());
+            control.addOverlay(gpx, 'Original (Blue)');
         }).addTo(map);
 
-
-        new L.GPX('{{ url('/samples/output/nonBlind/2020-11-25/original_hike.gpx') }}', {
+        new L.GPX('{{ url($output) }}', {
             async: true,
             marker_options: {
                 startIconUrl: '{{ url('/vendor/leaflet-gpx/pin-icon-start.png') }}',
@@ -83,15 +84,14 @@
                 shadowUrl:    '{{ url('/vendor/leaflet-gpx/pin-shadow.png') }}',
             },
             polyline_options: {
-                color: 'green',
-                weight: 2,
+                color: 'red',
+                weight: 4,
             }
         }).on('loaded', function(e) {
             var gpx = e.target;
-            control.addOverlay(gpx, 'Non-Blind (Green)');
+            control.addOverlay(gpx, 'Output (Red)');
             map.fitBounds(gpx.getBounds());
         }).addTo(map);
-
       }
 
       display_gpx('map');

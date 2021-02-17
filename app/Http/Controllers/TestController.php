@@ -22,9 +22,22 @@ class TestController extends Controller
         return view('index', ['source' => $source, 'output' => $watermarked]);
     }
 
-    public function map()
+    public function map(Request $request)
     {
-        return view('map');
+        $oExtract = new Extract();
+        $blind = $oExtract->blind(public_path($request->input('file')));
+
+        $output = $request->input('file');
+        $source = 'samples/source/'.basename($request->input('file'));
+
+        $nonBlind = $oExtract->nonBlind(public_path($source), public_path($output));
+
+
+        return view('map')->with('file', $request->input('file'))
+            ->with('source', $source)
+            ->with('output', $output)
+            ->with('blind', $blind)
+            ->with('nonBlind', $nonBlind);
     }
 
     public function embed(Request $request)
@@ -33,8 +46,8 @@ class TestController extends Controller
 
         $oWatermark = new Embed(
             public_path('samples/source/'.$request->input('file')),
-            public_path('samples/output/').$request->input('method').'/'.date('Y-m-d'),
-            'a.cooper2@lancaster.ac.uk',
+            public_path('samples/output/').$request->input('method').'/'.date('YmdHis'),
+            $request->input('message'),
             [
                 'name' => 'Coledale Horseshoe',
                 'desc' => 'Prepared on '.date('Y-m-d \a\t H:i').' for a.cooper2@lancaster.ac.uk. Route copyright Cicerone Press Limited. Not for public distribution.',

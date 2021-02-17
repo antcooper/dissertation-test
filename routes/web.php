@@ -17,7 +17,7 @@ use antcooper\gpxwatermark\Watermark;
 Route::get('/', 'TestController@index');
 Route::get('/map', 'TestController@map');
 
-Route::get('/embed', 'TestController@embed');
+Route::post('/embed', 'TestController@embed');
 
 Route::get('/blindExtract', 'TestController@blindExtract');
 
